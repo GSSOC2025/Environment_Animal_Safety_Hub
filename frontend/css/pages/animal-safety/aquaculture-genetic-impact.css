@@ -1,0 +1,532 @@
+/* ===========================================
+   AQUACULTURE GENETIC IMPACT - STYLES
+   =========================================== */
+
+/* ===========================================
+   HERO SECTION
+   =========================================== */
+.hero {
+  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #60a5fa 100%);
+  color: white;
+  padding: 120px 20px 80px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  min-height: 400px;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top, rgba(255,255,255,0.08), transparent 70%);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.hero h1 {
+  font-size: 3.2rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.hero p {
+  font-size: 1.3rem;
+  opacity: 0.95;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.hero-icon {
+  position: absolute;
+  top: 50%;
+  right: 8%;
+  transform: translateY(-50%);
+  font-size: 14rem;
+  opacity: 0.08;
+  z-index: 1;
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(-50%); }
+  50% { transform: translateY(-55%); }
+}
+
+/* ===========================================
+   INTRO SECTION
+   =========================================== */
+.intro-section {
+  padding: 80px 20px;
+  background: #ffffff;
+}
+
+.intro-section h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  color: var(--primary-color, #2e7d32);
+  margin-bottom: 20px;
+}
+
+.intro-section p {
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+  font-size: 1.15rem;
+  line-height: 1.8;
+  color: var(--text-secondary, #666);
+}
+
+/* ===========================================
+   GENETIC SECTION
+   =========================================== */
+.genetic-section {
+  padding: 80px 20px;
+  background: linear-gradient(to bottom, #f0f9ff, #ffffff);
+}
+
+.genetic-section h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  color: var(--primary-color, #2e7d32);
+  margin-bottom: 20px;
+}
+
+.genetic-section > p {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto 60px;
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: var(--text-secondary, #666);
+}
+
+.genetic-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto 60px;
+}
+
+.genetic-card {
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.genetic-card:hover {
+  transform: translateY(-5px);
+}
+
+.genetic-card i {
+  font-size: 3rem;
+  color: var(--primary-color, #2e7d32);
+  margin-bottom: 20px;
+}
+
+.genetic-card h3 {
+  font-size: 1.4rem;
+  color: var(--primary-color, #2e7d32);
+  margin-bottom: 15px;
+}
+
+.genetic-card p {
+  line-height: 1.6;
+  color: var(--text-secondary, #666);
+}
+
+.case-studies {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.case-studies h3 {
+  font-size: 2rem;
+  color: var(--primary-color, #2e7d32);
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.case-study {
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+  margin-bottom: 20px;
+  border-left: 4px solid var(--primary-color, #2e7d32);
+}
+
+.case-study h4 {
+  font-size: 1.3rem;
+  color: var(--primary-color, #2e7d32);
+  margin-bottom: 10px;
+}
+
+.case-study p {
+  margin-bottom: 8px;
+  line-height: 1.6;
+  color: var(--text-secondary, #666);
+}
+
+.case-study p strong {
+  color: var(--primary-color, #2e7d32);
+}
+
+/* ===========================================
+   DISEASE SECTION
+   =========================================== */
+.disease-section {
+  padding: 80px 20px;
+  background: linear-gradient(to bottom, #fef2f2, #ffffff);
+}
+
+.disease-section h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  color: #dc2626;
+  margin-bottom: 20px;
+}
+
+.disease-section > p {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto 60px;
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: var(--text-secondary, #666);
+}
+
+.disease-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 40px;
+  max-width: 1200px;
+  margin: 0 auto 60px;
+}
+
+.disease-card {
+  background: white;
+  padding: 35px;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+}
+
+.disease-card h3 {
+  font-size: 1.6rem;
+  color: #dc2626;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.disease-card ul {
+  list-style: none;
+  padding: 0;
+}
+
+.disease-card ul li {
+  padding: 10px 0;
+  padding-left: 25px;
+  position: relative;
+  line-height: 1.6;
+}
+
+.disease-card ul li::before {
+  content: '•';
+  position: absolute;
+  left: 8px;
+  color: #dc2626;
+  font-size: 1.5rem;
+}
+
+.diseases-list {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.diseases-list h3 {
+  font-size: 2rem;
+  color: #dc2626;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.disease-item {
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+  margin-bottom: 20px;
+  border-left: 4px solid #dc2626;
+}
+
+.disease-item h4 {
+  font-size: 1.3rem;
+  color: #dc2626;
+  margin-bottom: 10px;
+}
+
+.disease-item p {
+  line-height: 1.6;
+  color: var(--text-secondary, #666);
+}
+
+/* ===========================================
+   IMPACT SECTION
+   =========================================== */
+.impact-section {
+  padding: 80px 20px;
+  background: linear-gradient(to bottom, #f0fdf4, #ffffff);
+}
+
+.impact-section h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  color: var(--primary-color, #2e7d32);
+  margin-bottom: 20px;
+}
+
+.impact-section > p {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto 60px;
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: var(--text-secondary, #666);
+}
+
+.impact-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.impact-card {
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.impact-card:hover {
+  transform: translateY(-5px);
+}
+
+.impact-card i {
+  font-size: 3rem;
+  color: var(--primary-color, #2e7d32);
+  margin-bottom: 20px;
+}
+
+.impact-card h3 {
+  font-size: 1.4rem;
+  color: var(--primary-color, #2e7d32);
+  margin-bottom: 15px;
+}
+
+.impact-card p {
+  line-height: 1.6;
+  color: var(--text-secondary, #666);
+}
+
+/* ===========================================
+   REGULATION SECTION
+   =========================================== */
+.regulation-section {
+  padding: 80px 20px;
+  background: linear-gradient(to bottom, #fef3c7, #ffffff);
+}
+
+.regulation-section h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  color: var(--primary-color, #2e7d32);
+  margin-bottom: 20px;
+}
+
+.regulation-section > p {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto 60px;
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: var(--text-secondary, #666);
+}
+
+.regulation-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.regulation-item {
+  background: white;
+  padding: 35px;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+}
+
+.regulation-item h3 {
+  font-size: 1.6rem;
+  color: var(--primary-color, #2e7d32);
+  margin-bottom: 20px;
+}
+
+.regulation-item ul {
+  list-style: none;
+  padding: 0;
+}
+
+.regulation-item ul li {
+  padding: 8px 0;
+  line-height: 1.6;
+  color: var(--text-secondary, #666);
+}
+
+/* ===========================================
+   SOLUTIONS SECTION
+   =========================================== */
+.solutions-section {
+  padding: 80px 20px;
+  background: linear-gradient(to bottom, #e0f2fe, #ffffff);
+}
+
+.solutions-section h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  color: var(--primary-color, #2e7d32);
+  margin-bottom: 60px;
+}
+
+.solutions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.solution-card {
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+  transition: transform 0.3s ease;
+}
+
+.solution-card:hover {
+  transform: translateY(-5px);
+}
+
+.solution-card h3 {
+  font-size: 1.4rem;
+  color: var(--primary-color, #2e7d32);
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.solution-card ul {
+  list-style: none;
+  padding: 0;
+}
+
+.solution-card ul li {
+  padding: 8px 0;
+  line-height: 1.6;
+  color: var(--text-secondary, #666);
+  position: relative;
+  padding-left: 20px;
+}
+
+.solution-card ul li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: var(--primary-color, #2e7d32);
+  font-weight: bold;
+}
+
+/* ===========================================
+   CONCLUSION SECTION
+   =========================================== */
+.conclusion-section {
+  padding: 80px 20px;
+  background: linear-gradient(to bottom, #f3e8ff, #ffffff);
+}
+
+.conclusion-section h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  color: var(--primary-color, #2e7d32);
+  margin-bottom: 20px;
+}
+
+.conclusion-section > p {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto 40px;
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: var(--text-secondary, #666);
+}
+
+.future-outlook {
+  max-width: 900px;
+  margin: 0 auto;
+  background: white;
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+  text-align: center;
+}
+
+.future-outlook p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: var(--text-secondary, #666);
+}
+
+/* ===========================================
+   RESPONSIVE DESIGN
+   =========================================== */
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 2.5rem;
+  }
+
+  .genetic-grid,
+  .disease-grid,
+  .impact-grid,
+  .solutions-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .regulation-content {
+    grid-template-columns: 1fr;
+  }
+
+  .genetic-card,
+  .impact-card,
+  .solution-card {
+    padding: 25px;
+  }
+
+  .disease-card {
+    padding: 25px;
+  }
+}
