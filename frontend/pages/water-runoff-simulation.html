@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Water Runoff Simulation - Environment & Animal Safety Hub</title>
+    <link rel="stylesheet" href="../css/water-runoff-simulation.css">
+    <link rel="icon" href="../assets/icons/water-icon.png" type="image/png">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <img src="../assets/icons/water-icon.png" alt="Water Icon" class="nav-icon">
+                <span>Water Runoff Simulation</span>
+            </div>
+            <div class="nav-links">
+                <a href="#simulation" class="nav-link active">Simulation</a>
+                <a href="#maps" class="nav-link">Flow Maps</a>
+                <a href="#analysis" class="nav-link">Analysis</a>
+                <a href="#recommendations" class="nav-link">Recommendations</a>
+                <a href="#scenarios" class="nav-link">Scenarios</a>
+                <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <section id="simulation" class="simulation-section">
+            <div class="container">
+                <div class="simulation-header">
+                    <h1>Water Runoff Simulation</h1>
+                    <p class="simulation-subtitle">Analyze water movement, erosion risks, and infiltration patterns on your land</p>
+                    <div class="simulation-controls">
+                        <div class="control-group">
+                            <label for="rainfall-intensity">Rainfall Intensity:</label>
+                            <input type="range" id="rainfall-intensity" min="5" max="100" value="25" step="5">
+                            <span class="control-value" id="rainfall-value">25 mm/hr</span>
+                        </div>
+                        <div class="control-group">
+                            <label for="duration">Duration:</label>
+                            <input type="range" id="duration" min="10" max="240" value="60" step="10">
+                            <span class="control-value" id="duration-value">60 min</span>
+                        </div>
+                        <div class="control-group">
+                            <label for="soil-type">Soil Type:</label>
+                            <select id="soil-type" class="control-select">
+                                <option value="sandy">Sandy</option>
+                                <option value="loamy" selected>Loamy</option>
+                                <option value="clay">Clay</option>
+                                <option value="silt">Silt</option>
+                            </select>
+                        </div>
+                        <button id="run-simulation" class="run-btn">Run Simulation</button>
+                    </div>
+                </div>
+
+                <div class="simulation-results">
+                    <div class="result-card runoff-summary">
+                        <div class="result-header">
+                            <h3>Runoff Summary</h3>
+                            <div class="result-status" id="runoff-status">Ready</div>
+                        </div>
+                        <div class="result-content">
+                            <div class="metric-grid">
+                                <div class="metric-item">
+                                    <div class="metric-icon">💧</div>
+                                    <div class="metric-data">
+                                        <div class="metric-value" id="total-runoff">0 L</div>
+                                        <div class="metric-label">Total Runoff</div>
+                                    </div>
+                                </div>
+                                <div class="metric-item">
+                                    <div class="metric-icon">🌱</div>
+                                    <div class="metric-data">
+                                        <div class="metric-value" id="infiltration">0 L</div>
+                                        <div class="metric-label">Infiltration</div>
+                                    </div>
+                                </div>
+                                <div class="metric-item">
+                                    <div class="metric-icon">⚠️</div>
+                                    <div class="metric-data">
+                                        <div class="metric-value" id="erosion-risk">Low</div>
+                                        <div class="metric-label">Erosion Risk</div>
+                                    </div>
+                                </div>
+                                <div class="metric-item">
+                                    <div class="metric-icon">💯</div>
+                                    <div class="metric-data">
+                                        <div class="metric-value" id="retention-rate">0%</div>
+                                        <div class="metric-label">Water Retention</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="result-card flow-visualization">
+                        <div class="result-header">
+                            <h3>Flow Visualization</h3>
+                        </div>
+                        <div class="result-content">
+                            <div id="flow-canvas" class="flow-canvas"></div>
+                            <div class="flow-legend">
+                                <div class="legend-item">
+                                    <div class="legend-color runoff"></div>
+                                    <span>Runoff Path</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-color infiltration"></div>
+                                    <span>Infiltration Zone</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-color ponding"></div>
+                                    <span>Ponding Area</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="result-card time-series">
+                        <div class="result-header">
+                            <h3>Time Series Analysis</h3>
+                        </div>
+                        <div class="result-content">
+                            <canvas id="time-series-chart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="maps" class="maps-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Interactive Flow Maps</h2>
+                    <p>Visualize water movement patterns and identify high-risk erosion areas</p>
+                </div>
+
+                <div class="map-container">
+                    <div class="map-controls">
+                        <div class="map-layers">
+                            <button class="layer-btn active" data-layer="topography">Topography</button>
+                            <button class="layer-btn" data-layer="vegetation">Vegetation</button>
+                            <button class="layer-btn" data-layer="soil">Soil Type</button>
+                            <button class="layer-btn" data-layer="flow">Flow Paths</button>
+                            <button class="layer-btn" data-layer="erosion">Erosion Risk</button>
+                        </div>
+                        <div class="map-tools">
+                            <button class="tool-btn" id="draw-contour">Draw Contour</button>
+                            <button class="tool-btn" id="add-vegetation">Add Vegetation</button>
+                            <button class="tool-btn" id="measure-slope">Measure Slope</button>
+                        </div>
+                    </div>
+                    <div id="runoff-map" class="runoff-map"></div>
+                </div>
+
+                <div class="map-analysis">
+                    <div class="analysis-card">
+                        <h3>Terrain Analysis</h3>
+                        <div class="analysis-content">
+                            <div class="analysis-metric">
+                                <span class="metric-label">Average Slope:</span>
+                                <span class="metric-value" id="avg-slope">5.2°</span>
+                            </div>
+                            <div class="analysis-metric">
+                                <span class="metric-label">Max Slope:</span>
+                                <span class="metric-value" id="max-slope">12.8°</span>
+                            </div>
+                            <div class="analysis-metric">
+                                <span class="metric-label">Flow Accumulation:</span>
+                                <span class="metric-value" id="flow-accumulation">High</span>
+                            </div>
+                            <div class="analysis-metric">
+                                <span class="metric-label">Drainage Density:</span>
+                                <span class="metric-value" id="drainage-density">Medium</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="analysis-card">
+                        <h3>Risk Assessment</h3>
+                        <div class="analysis-content">
+                            <div class="risk-zones">
+                                <div class="risk-zone high">
+                                    <div class="risk-indicator"></div>
+                                    <div class="risk-text">High Risk: South-facing slope (15-20°)</div>
+                                </div>
+                                <div class="risk-zone medium">
+                                    <div class="risk-indicator"></div>
+                                    <div class="risk-text">Medium Risk: Central field area</div>
+                                </div>
+                                <div class="risk-zone low">
+                                    <div class="risk-indicator"></div>
+                                    <div class="risk-text">Low Risk: Northern terrace</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="analysis" class="analysis-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Detailed Analysis</h2>
+                    <p>Comprehensive breakdown of water movement and soil management factors</p>
+                </div>
+
+                <div class="analysis-grid">
+                    <div class="analysis-card soil-properties">
+                        <div class="card-header">
+                            <h3>Soil Properties Impact</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="property-indicators">
+                                <div class="property-item">
+                                    <div class="property-label">Infiltration Rate</div>
+                                    <div class="property-bar">
+                                        <div class="property-fill" id="infiltration-rate" style="width: 75%"></div>
+                                    </div>
+                                    <div class="property-value">7.5 mm/hr</div>
+                                </div>
+                                <div class="property-item">
+                                    <div class="property-label">Water Holding Capacity</div>
+                                    <div class="property-bar">
+                                        <div class="property-fill" id="water-holding" style="width: 82%"></div>
+                                    </div>
+                                    <div class="property-value">32%</div>
+                                </div>
+                                <div class="property-item">
+                                    <div class="property-label">Surface Roughness</div>
+                                    <div class="property-bar">
+                                        <div class="property-fill" id="surface-roughness" style="width: 45%"></div>
+                                    </div>
+                                    <div class="property-value">Low</div>
+                                </div>
+                                <div class="property-item">
+                                    <div class="property-label">Organic Matter</div>
+                                    <div class="property-bar">
+                                        <div class="property-fill" id="organic-matter" style="width: 68%"></div>
+                                    </div>
+                                    <div class="property-value">3.2%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="analysis-card vegetation-impact">
+                        <div class="card-header">
+                            <h3>Vegetation Impact</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="vegetation-stats">
+                                <div class="veg-metric">
+                                    <div class="veg-icon">🌾</div>
+                                    <div class="veg-info">
+                                        <div class="veg-value">65%</div>
+                                        <div class="veg-label">Ground Cover</div>
+                                    </div>
+                                </div>
+                                <div class="veg-metric">
+                                    <div class="veg-icon">🌱</div>
+                                    <div class="veg-info">
+                                        <div class="veg-value">12 cm</div>
+                                        <div class="veg-label">Root Depth</div>
+                                    </div>
+                                </div>
+                                <div class="veg-metric">
+                                    <div class="veg-icon">🌿</div>
+                                    <div class="veg-info">
+                                        <div class="veg-value">8.5</div>
+                                        <div class="veg-label">Leaf Area Index</div>
+                                    </div>
+                                </div>
+                                <div class="veg-metric">
+                                    <div class="veg-icon">🌳</div>
+                                    <div class="veg-info">
+                                        <div class="veg-value">High</div>
+                                        <div class="veg-label">Interception Capacity</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="analysis-card rainfall-patterns">
+                        <div class="card-header">
+                            <h3>Rainfall Patterns</h3>
+                        </div>
+                        <div class="card-content">
+                            <canvas id="rainfall-chart" width="400" height="200"></canvas>
+                            <div class="rainfall-stats">
+                                <div class="rain-stat">
+                                    <span class="stat-label">Peak Intensity:</span>
+                                    <span class="stat-value">45 mm/hr</span>
+                                </div>
+                                <div class="rain-stat">
+                                    <span class="stat-label">Total Volume:</span>
+                                    <span class="stat-value">1,250 mm</span>
+                                </div>
+                                <div class="rain-stat">
+                                    <span class="stat-label">Duration:</span>
+                                    <span class="stat-value">180 min</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="analysis-card management-factors">
+                        <div class="card-header">
+                            <h3>Management Factors</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="management-list">
+                                <div class="management-item">
+                                    <div class="management-factor">Tillage Practices</div>
+                                    <div class="management-impact positive">+15% infiltration</div>
+                                </div>
+                                <div class="management-item">
+                                    <div class="management-factor">Residue Management</div>
+                                    <div class="management-impact positive">+22% retention</div>
+                                </div>
+                                <div class="management-item">
+                                    <div class="management-factor">Drainage Systems</div>
+                                    <div class="management-impact neutral">No significant impact</div>
+                                </div>
+                                <div class="management-item">
+                                    <div class="management-factor">Compaction</div>
+                                    <div class="management-impact negative">-18% infiltration</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="recommendations" class="recommendations-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Soil Management Recommendations</h2>
+                    <p>Evidence-based suggestions to reduce runoff and improve water retention</p>
+                </div>
+
+                <div class="recommendations-grid">
+                    <div class="recommendation-card priority-high">
+                        <div class="recommendation-header">
+                            <div class="priority-badge high">High Priority</div>
+                            <h3>Install Contour Swales</h3>
+                        </div>
+                        <div class="recommendation-content">
+                            <p>Create shallow trenches along contour lines to capture and slow down runoff water. This allows more time for water to infiltrate into the soil.</p>
+                            <div class="recommendation-benefits">
+                                <div class="benefit-item">
+                                    <span class="benefit-label">Runoff Reduction:</span>
+                                    <span class="benefit-value">35-50%</span>
+                                </div>
+                                <div class="benefit-item">
+                                    <span class="benefit-label">Implementation Cost:</span>
+                                    <span class="benefit-value">Medium</span>
+                                </div>
+                                <div class="benefit-item">
+                                    <span class="benefit-label">Maintenance:</span>
+                                    <span class="benefit-value">Low</span>
+                                </div>
+                            </div>
+                            <button class="recommendation-btn">View Implementation Guide</button>
+                        </div>
+                    </div>
+
+                    <div class="recommendation-card priority-high">
+                        <div class="recommendation-header">
+                            <div class="priority-badge high">High Priority</div>
+                            <h3>Cover Cropping</h3>
+                        </div>
+                        <div class="recommendation-content">
+                            <p>Plant cover crops during off-seasons to protect soil surface and improve structure. Choose deep-rooted species that enhance infiltration.</p>
+                            <div class="recommendation-benefits">
+                                <div class="benefit-item">
+                                    <span class="benefit-label">Soil Protection:</span>
+                                    <span class="benefit-value">90%</span>
+                                </div>
+                                <div class="benefit-item">
+                                    <span class="benefit-label">Implementation Cost:</span>
+                                    <span class="benefit-value">Low</span>
+                                </div>
+                                <div class="benefit-item">
+                                    <span class="benefit-label">Maintenance:</span>
+                                    <span class="benefit-value">Medium</span>
+                                </div>
+                            </div>
+                            <button class="recommendation-btn">Cover Crop Database</button>
+                        </div>
+                    </div>
+
+                    <div class="recommendation-card priority-medium">
+                        <div class="recommendation-header">
+                            <div class="priority-badge medium">Medium Priority</div>
+                            <h3>Mulching Practices</h3>
+                        </div>
+                        <div class="recommendation-content">
+                            <p>Apply organic mulch to reduce surface sealing and evaporation. Use crop residues, wood chips, or compost for best results.</p>
+                            <div class="recommendation-benefits">
+                                <div class="benefit-item">
+                                    <span class="benefit-label">Water Retention:</span>
+                                    <span class="benefit-value">+25%</span>
+                                </div>
+                                <div class="benefit-item">
+                                    <span class="benefit-label">Implementation Cost:</span>
+                                    <span class="benefit-value">Low</span>
+                                </div>
+                                <div class="benefit-item">
+                                    <span class="benefit-label">Maintenance:</span>
+                                    <span class="benefit-value">Low</span>
+                                </div>
+                            </div>
+                            <button class="recommendation-btn">Mulching Techniques</button>
+                        </div>
+                    </div>
+
+                    <div class="recommendation-card priority-medium">
+                        <div class="recommendation-header">
+                            <div class="priority-badge medium">Medium Priority</div>
+                            <h3>Keyline Design</h3>
+                        </div>
+                        <div class="recommendation-content">
+                            <p>Implement keyline cultivation patterns to maximize water harvesting and distribution across the landscape.</p>
+                            <div class="recommendation-benefits">
+                                <div class="benefit-item">
+                                    <span class="benefit-label">Water Distribution:</span>
+                                    <span class="benefit-value">+40%</span>
+                                </div>
+                                <div class="benefit-item">
+                                    <span class="benefit-label">Implementation Cost:</span>
+                                    <span class="benefit-value">High</span>
+                                </div>
+                                <div class="benefit-item">
+                                    <span class="benefit-label">Maintenance:</span>
+                                    <span class="benefit-value">Low</span>
+                                </div>
+                            </div>
+                            <button class="recommendation-btn">Keyline Planning Tool</button>
+                        </div>
+                    </div>
+
+                    <div class="recommendation-card priority-low">
+                        <div class="recommendation-header">
+                            <div class="priority-badge low">Low Priority</div>
+                            <h3>Agroforestry Integration</h3>
+                        </div>
+                        <div class="recommendation-content">
+                            <p>Incorporate trees and shrubs into farming systems to create windbreaks and improve microclimate conditions.</p>
+                            <div class="recommendation-benefits">
+                                <div class="benefit-item">
+                                    <span class="benefit-label">Long-term Benefit:</span>
+                                    <span class="benefit-value">High</span>
+                                </div>
+                                <div class="benefit-item">
+                                    <span class="benefit-label">Implementation Cost:</span>
+                                    <span class="benefit-value">High</span>
+                                </div>
+                                <div class="benefit-item">
+                                    <span class="benefit-label">Maintenance:</span>
+                                    <span class="benefit-value">Medium</span>
+                                </div>
+                            </div>
+                            <button class="recommendation-btn">Agroforestry Guide</button>
+                        </div>
+                    </div>
+
+                    <div class="recommendation-card priority-low">
+                        <div class="recommendation-header">
+                            <div class="priority-badge low">Low Priority</div>
+                            <h3>Permeable Pavement</h3>
+                        </div>
+                        <div class="recommendation-content">
+                            <p>Use permeable surfaces in high-traffic areas to allow water infiltration and reduce concentrated flow.</p>
+                            <div class="recommendation-benefits">
+                                <div class="benefit-item">
+                                    <span class="benefit-label">Infiltration Rate:</span>
+                                    <span class="benefit-value">+60%</span>
+                                </div>
+                                <div class="benefit-item">
+                                    <span class="benefit-label">Implementation Cost:</span>
+                                    <span class="benefit-value">Medium</span>
+                                </div>
+                                <div class="benefit-item">
+                                    <span class="benefit-label">Maintenance:</span>
+                                    <span class="benefit-value">Low</span>
+                                </div>
+                            </div>
+                            <button class="recommendation-btn">Permeable Solutions</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="implementation-timeline">
+                    <h3>Implementation Timeline</h3>
+                    <div class="timeline">
+                        <div class="timeline-item completed">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <h4>Phase 1: Assessment (Current)</h4>
+                                <p>Complete runoff analysis and identify priority areas</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item active">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <h4>Phase 2: Quick Wins (Next 2 weeks)</h4>
+                                <p>Implement contour swales and cover cropping</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item upcoming">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <h4>Phase 3: Structural Changes (1-3 months)</h4>
+                                <p>Keyline design and agroforestry integration</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item upcoming">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <h4>Phase 4: Monitoring (Ongoing)</h4>
+                                <p>Track improvements and adjust management</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="scenarios" class="scenarios-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Scenario Comparison</h2>
+                    <p>Compare different management scenarios and their impact on water runoff</p>
+                </div>
+
+                <div class="scenarios-container">
+                    <div class="scenario-card baseline">
+                        <div class="scenario-header">
+                            <h3>Baseline (Current)</h3>
+                            <div class="scenario-badge">Current State</div>
+                        </div>
+                        <div class="scenario-content">
+                            <div class="scenario-metrics">
+                                <div class="scenario-metric">
+                                    <span class="metric-label">Runoff Volume:</span>
+                                    <span class="metric-value">850 L</span>
+                                </div>
+                                <div class="scenario-metric">
+                                    <span class="metric-label">Erosion Rate:</span>
+                                    <span class="metric-value">12 t/ha</span>
+                                </div>
+                                <div class="scenario-metric">
+                                    <span class="metric-label">Water Retention:</span>
+                                    <span class="metric-value">35%</span>
+                                </div>
+                            </div>
+                            <div class="scenario-description">
+                                <p>Conventional tillage with bare soil periods and no water harvesting structures.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="scenario-card improved">
+                        <div class="scenario-header">
+                            <h3>Conservation Agriculture</h3>
+                            <div class="scenario-badge">Recommended</div>
+                        </div>
+                        <div class="scenario-content">
+                            <div class="scenario-metrics">
+                                <div class="scenario-metric">
+                                    <span class="metric-label">Runoff Volume:</span>
+                                    <span class="metric-value">420 L</span>
+                                </div>
+                                <div class="scenario-metric">
+                                    <span class="metric-label">Erosion Rate:</span>
+                                    <span class="metric-value">3.2 t/ha</span>
+                                </div>
+                                <div class="scenario-metric">
+                                    <span class="metric-label">Water Retention:</span>
+                                    <span class="metric-value">72%</span>
+                                </div>
+                            </div>
+                            <div class="scenario-description">
+                                <p>Minimum tillage, cover crops, contour swales, and organic mulching.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="scenario-card optimal">
+                        <div class="scenario-header">
+                            <h3>Regenerative Design</h3>
+                            <div class="scenario-badge">Optimal</div>
+                        </div>
+                        <div class="scenario-content">
+                            <div class="scenario-metrics">
+                                <div class="scenario-metric">
+                                    <span class="metric-label">Runoff Volume:</span>
+                                    <span class="metric-value">180 L</span>
+                                </div>
+                                <div class="scenario-metric">
+                                    <span class="metric-label">Erosion Rate:</span>
+                                    <span class="metric-value">0.8 t/ha</span>
+                                </div>
+                                <div class="scenario-metric">
+                                    <span class="metric-label">Water Retention:</span>
+                                    <span class="metric-value">89%</span>
+                                </div>
+                            </div>
+                            <div class="scenario-description">
+                                <p>Full regenerative system with keyline design, agroforestry, and holistic management.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="scenario-comparison">
+                    <h3>Scenario Impact Comparison</h3>
+                    <canvas id="scenario-comparison-chart" width="400" height="250"></canvas>
+                </div>
+
+                <div class="scenario-customization">
+                    <h3>Custom Scenario Builder</h3>
+                    <div class="customization-controls">
+                        <div class="custom-control">
+                            <label for="custom-tillage">Tillage Practice:</label>
+                            <select id="custom-tillage">
+                                <option value="conventional">Conventional</option>
+                                <option value="minimum">Minimum Tillage</option>
+                                <option value="no-till">No-Till</option>
+                            </select>
+                        </div>
+                        <div class="custom-control">
+                            <label for="custom-cover">Cover Crop (%):</label>
+                            <input type="range" id="custom-cover" min="0" max="100" value="50">
+                            <span id="custom-cover-value">50%</span>
+                        </div>
+                        <div class="custom-control">
+                            <label for="custom-swales">Contour Swales:</label>
+                            <select id="custom-swales">
+                                <option value="none">None</option>
+                                <option value="partial">Partial</option>
+                                <option value="complete">Complete</option>
+                            </select>
+                        </div>
+                        <button id="calculate-custom" class="calculate-btn">Calculate Impact</button>
+                    </div>
+                    <div class="custom-results" id="custom-results" style="display: none;">
+                        <div class="custom-metrics">
+                            <div class="custom-metric">
+                                <span class="metric-label">Projected Runoff:</span>
+                                <span class="metric-value" id="custom-runoff">0 L</span>
+                            </div>
+                            <div class="custom-metric">
+                                <span class="metric-label">Erosion Reduction:</span>
+                                <span class="metric-value" id="custom-erosion">0%</span>
+                            </div>
+                            <div class="custom-metric">
+                                <span class="metric-label">Water Retention:</span>
+                                <span class="metric-value" id="custom-retention">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>About Water Runoff Simulation</h4>
+                    <p>Advanced hydrological modeling to help farmers and land managers understand water movement patterns and implement effective soil conservation strategies.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#simulation">Simulation</a></li>
+                        <li><a href="#maps">Flow Maps</a></li>
+                        <li><a href="#analysis">Analysis</a></li>
+                        <li><a href="#recommendations">Recommendations</a></li>
+                        <li><a href="#scenarios">Scenarios</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="#">Hydrology Guides</a></li>
+                        <li><a href="#">Soil Conservation</a></li>
+                        <li><a href="#">Regenerative Practices</a></li>
+                        <li><a href="#">Case Studies</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact & Support</h4>
+                    <ul>
+                        <li><a href="#">Technical Support</a></li>
+                        <li><a href="#">Report Issues</a></li>
+                        <li><a href="#">Feedback</a></li>
+                        <li><a href="#">Documentation</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Environment & Animal Safety Hub. All rights reserved. | Promoting sustainable water management and soil conservation.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/water-runoff-simulation.js"></script>
+</body>
+</html>
